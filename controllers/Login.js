@@ -5,7 +5,7 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     const loginDetails =
-      "SELECT id, email, password FROM user WHERE email = ?";
+      "SELECT id, email, password, role FROM user WHERE email = ?";
 
     const [loginDb] = await pool.query(loginDetails, [email]);
 
@@ -30,7 +30,9 @@ const userLogin = async (req, res) => {
     res.status(200).json({
       status: "Success",
       message: "Login Successfully",
-      userId: user.id
+      userId: user.id,
+      email: user.email,
+      role: user.role
     });
 
   } catch (error) {
