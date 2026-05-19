@@ -7,7 +7,7 @@ const editTeachers = async (req, res) => {
     const { name, surname, gender, mobile, subject, date, experience, salary } = req.body;
 
     const updateTeachers =
-      "UPDATE teachers SET name=?, surname=?, gender=?, mobile=?, subject=?, date=?, experience=?, salary=? WHERE id=?";
+      "UPDATE teachers SET name=?, surname=?, gender=?, mobile=?, subject=?, date=?, experience=?, salary=? WHERE user_id=?";
 
     await pool.query(updateTeachers, [
       name,

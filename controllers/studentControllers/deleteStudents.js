@@ -1,4 +1,4 @@
-const pool = require("../Configs/dbConfig");
+const pool = require("../../Configs/dbConfig");
 
 const deleteStudents = async (req, res) => {
 

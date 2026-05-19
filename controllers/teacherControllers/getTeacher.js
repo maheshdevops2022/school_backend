@@ -6,7 +6,7 @@ const getTeachers = async (req,res) => {
         const getData = "select * from teachers";
         const [teachers] = await pool.query(getData);
 
-        res.status(200).json({status:"success", message: "Get Teachers"})
+        res.status(200).json({status:"success", message: "Get Teachers", data: teachers})
 
 
     } catch (error) {

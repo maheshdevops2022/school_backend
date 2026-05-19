@@ -1,7 +1,10 @@
 const pool = require("../Configs/dbConfig");
+const bcrypt = require("bcryptjs");
 
 const userRegister = async (req, res) => {
   const { name, email, phone, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password,10);
 
   const registerDetails =
     "insert into user (name,email,phone,password) values (?,?,?,?)";
@@ -10,7 +13,7 @@ const userRegister = async (req, res) => {
     name,
     email,
     phone,
-    password,
+    hashedPassword,
   ]);
 
   if (!registerDate.insertId) {
