@@ -27,8 +27,8 @@ router.delete("/deleteStudents/:id", deleteStudents);
 
 router.post("/addTeachers", addTeachers);
 router.get("/getTeachers", getTeachers);
-router.put("/editTeachers/:user_id", editTeachers);
-router.delete("/deleteTeachers/:user_id", deleteTeachers);
+router.put("/editTeachers/:id", editTeachers);
+router.delete("/deleteTeachers/:id", deleteTeachers);
 
 //classes 
 

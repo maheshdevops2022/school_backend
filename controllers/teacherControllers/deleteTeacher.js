@@ -7,9 +7,9 @@ const deleteTeachers = async (req, res) => {
     const { id } = req.params;
 
     const deleteQuery =
-      "DELETE FROM teachers WHERE user_id = ?";
+      "DELETE FROM teachers WHERE id = ?";
 
-    await pool.query(deleteQuery, [user_id]);
+    await pool.query(deleteQuery, [id]);
 
     res.status(200).json({
       status: "Success",
