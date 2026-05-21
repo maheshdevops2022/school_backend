@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const addTeachers = async (req, res) => {
   try {
-    const { email, password, name, surname, gender, mobile, subject, date, experience, salary } =
+    const {email, password, name, surname, gender, mobile, subject, date, experience, salary } =
       req.body;
 
     //check email exists
@@ -22,16 +22,17 @@ const addTeachers = async (req, res) => {
 
     const userQuery = "insert into user (email, password, role) values (?, ?, ?)";
 
-    const [userResult] = await pool.query(userQuery, [email, password, "teacher"]);
+    const [userResult] = await pool.query(userQuery, [email, hashedPassword, "teacher"]);
 
     //get user id
 
     const userId = userResult.insertId;
 
     const teachers =
-      "insert into teachers (name,surname,gender,mobile,subject,date,experience,salary) values(?,?,?,?,?,?,?,?)";
+      "insert into teachers (userId,name,surname,gender,mobile,subject,date,experience,salary) values(?,?,?,?,?,?,?,?,?)";
 
     const teachersData = await pool.query(teachers, [
+      userId,
       name,
       surname,
       gender,

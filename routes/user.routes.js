@@ -12,6 +12,7 @@ const getClass = require("../controllers/classControllers/getClass");
 const updateClass = require("../controllers/classControllers/updateClass");
 const deleteClasses = require("../controllers/classControllers/deleteClass");
 const getDashboard = require("../controllers/dashboardControllers/getDashboard");
+const { authorization, roleAuthorization } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -25,10 +26,14 @@ router.delete("/deleteStudents/:id", deleteStudents);
 
 //teachers
 
-router.post("/addTeachers", addTeachers);
-router.get("/getTeachers", getTeachers);
-router.put("/editTeachers/:id", editTeachers);
-router.delete("/deleteTeachers/:id", deleteTeachers);
+router.post("/addTeachers",authorization,roleAuthorization("admin"), addTeachers);
+
+//admin+teacher
+router.get("/getTeachers",authorization,roleAuthorization("admin", "teacher"), getTeachers);
+
+//admin
+router.put("/editTeachers/:id",authorization,roleAuthorization("admin"), editTeachers);
+router.delete("/deleteTeachers/:id",authorization,roleAuthorization("admin"), deleteTeachers);
 
 //classes 
 
