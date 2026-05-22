@@ -3,35 +3,79 @@ const bcrypt = require("bcrypt");
 
 const addTeachers = async (req, res) => {
   try {
-    const {email, password, name, surname, gender, mobile, subject, date, experience, salary } =
+    const { email, password, name, surname, gender, mobile, subject, date, experience, salary } =
       req.body;
 
-    //check email exists
+    // VALIDATION
 
-    const checkEmail = "select * from user where email = ?";
+    if (
+      !email ||
+      !password ||
+      !name ||
+      !surname ||
+      !gender ||
+      !mobile ||
+      !subject ||
+      !date ||
+      !experience ||
+      !salary
+    ) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "All fields required",
+      });
+    }
+
+    // CHECK EMAIL
+
+    const checkEmail = "SELECT * FROM user WHERE email = ?";
 
     const [existingUser] = await pool.query(checkEmail, [email]);
 
     if (existingUser.length > 0) {
-      res.status(400).json({ status: "Failed", message: "Email already exists" });
+      return res.status(400).json({
+        status: "Failed",
+        message: "Email already exists",
+      });
     }
+
+    // HASH PASSWORD
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //insert into usertable
+    // INSERT USER
 
-    const userQuery = "insert into user (email, password, role) values (?, ?, ?)";
+    const userQuery = `
+      INSERT INTO user
+      (email, password, role)
+      VALUES (?, ?, ?)
+    `;
 
     const [userResult] = await pool.query(userQuery, [email, hashedPassword, "teacher"]);
 
-    //get user id
+    // USER ID
 
     const userId = userResult.insertId;
 
-    const teachers =
-      "insert into teachers (userId,name,surname,gender,mobile,subject,date,experience,salary) values(?,?,?,?,?,?,?,?,?)";
+    // INSERT TEACHER DETAILS
 
-    const teachersData = await pool.query(teachers, [
+    const teacherQuery = `
+      INSERT INTO teachers
+      (
+        userId,
+        name,
+        surname,
+        gender,
+        mobile,
+        subject,
+        date,
+        experience,
+        salary
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    await pool.query(teacherQuery, [
       userId,
       name,
       surname,
@@ -43,9 +87,17 @@ const addTeachers = async (req, res) => {
       salary,
     ]);
 
-    res.status(200).json({ status: "Success", message: "Added Teachers" });
+    res.status(200).json({
+      status: "Success",
+      message: "Teacher Added Successfully",
+    });
   } catch (error) {
-    res.status(500).json({ status: "Failed", message: "Server Error" });
+    console.log(error);
+
+    res.status(500).json({
+      status: "Failed",
+      message: error.message,
+    });
   }
 };
 

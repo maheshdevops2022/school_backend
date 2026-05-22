@@ -2,24 +2,44 @@ const pool = require("../../Configs/dbConfig");
 
 const getDashboard = async (req, res) => {
   try {
-    const [students] = await pool.query("select count (*) as totalStudents from students");
 
-    const [teachers] = await pool.query("select count (*) as totalTeachers from teachers");
+    // TOTAL STUDENTS
+    const [students] = await pool.query(`
+      SELECT SUM(total_students) AS totalStudents
+      FROM classes
+    `);
 
-    const [classes] = await pool.query("select count (*) as totalClasses from classes");
+    // TOTAL CLASSES
+    const [classes] = await pool.query(`
+      SELECT COUNT(*) AS totalClasses
+      FROM classes
+    `);
+
+    // TOTAL TEACHERS
+    const [teachers] = await pool.query(`
+      SELECT COUNT(*) AS totalTeachers
+      FROM teachers
+    `);
 
     res.status(200).json({
       status: "success",
-      message: "Data get SuccessFully",
+      message: "Dashboard Data Fetched Successfully",
       data: {
-        totalStudents: students[0].totalStudents,
-        totalTeachers: teachers[0].totalTeachers,
-        totalClasses: classes[0].totalClasses,
+        totalStudents: students[0].totalStudents || 0,
+        totalTeachers: teachers[0].totalTeachers || 0,
+        totalClasses: classes[0].totalClasses || 0,
       },
     });
+
   } catch (error) {
+
     console.log(error);
-    res.status(500).json({ status: "Failed", message: "Server failure" });
+
+    res.status(500).json({
+      status: "Failed",
+      message: error.message,
+    });
+
   }
 };
 

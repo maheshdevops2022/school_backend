@@ -16,26 +16,41 @@ const { authorization, roleAuthorization } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/addStudents", addStudents);
+router.post("/addStudents", authorization, roleAuthorization("admin", "teacher"), addStudents);
 
-router.get("/getStudents", getStudents);
+router.get(
+  "/getStudents",
+  authorization,
+  roleAuthorization("admin", "teacher", "student"),
+  getStudents
+);
 
-router.put("/updateStudents/:id", editStudents);
+router.put(
+  "/updateStudents/:id",
+  authorization,
+  roleAuthorization("admin", "teacher"),
+  editStudents
+);
 
-router.delete("/deleteStudents/:id", deleteStudents);
+router.delete(
+  "/deleteStudents/:id",
+  authorization,
+  roleAuthorization("admin", "teacher"),
+  deleteStudents
+);
 
 //teachers
 
-router.post("/addTeachers",authorization,roleAuthorization("admin"), addTeachers);
+router.post("/addTeachers", authorization, roleAuthorization("admin"), addTeachers);
 
 //admin+teacher
-router.get("/getTeachers",authorization,roleAuthorization("admin", "teacher"), getTeachers);
+router.get("/getTeachers", authorization, roleAuthorization("admin", "teacher"), getTeachers);
 
 //admin
-router.put("/editTeachers/:id",authorization,roleAuthorization("admin"), editTeachers);
-router.delete("/deleteTeachers/:id",authorization,roleAuthorization("admin"), deleteTeachers);
+router.put("/editTeachers/:id", authorization, roleAuthorization("admin"), editTeachers);
+router.delete("/deleteTeachers/:id", authorization, roleAuthorization("admin"), deleteTeachers);
 
-//classes 
+//classes
 
 router.post("/addClasses", addClass);
 router.get("/getClasses", getClass);
@@ -44,6 +59,6 @@ router.delete("/deleteClasses/:id", deleteClasses);
 
 //dashboard
 
-router.get("/getDashboard", getDashboard);
+router.get("/getDashboard", authorization, roleAuthorization("admin", "teacher"), getDashboard);
 
 module.exports = router;

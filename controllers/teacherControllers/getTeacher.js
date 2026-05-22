@@ -4,34 +4,66 @@ const getTeachers = async (req, res) => {
 
   try {
 
+    const role = req.user.role;
+    const userId = req.user.id;
+
     let query = "";
     let values = [];
 
-    // admin
-    if (req.user.role === "admin") {
+    // ADMIN → all teachers
 
-      query = "SELECT * FROM teachers";
+    if (role === "admin") {
 
+      query = `
+        SELECT
+          teachers.id,
+          teachers.userId,
+          user.email,
+          teachers.name,
+          teachers.surname,
+          teachers.gender,
+          teachers.mobile,
+          teachers.subject,
+          teachers.date,
+          teachers.experience,
+          teachers.salary
+        FROM teachers
+        JOIN user
+        ON teachers.userId = user.id
+      `;
     }
 
-    // teacher
-    else if (req.user.role === "teacher") {
+    // TEACHER → own details only
 
-      query =
-        "SELECT * FROM teachers WHERE user_id = ?";
+    else if (role === "teacher") {
 
-      values = [req.user.id];
+      query = `
+        SELECT
+          teachers.id,
+          teachers.userId,
+          user.email,
+          teachers.name,
+          teachers.surname,
+          teachers.gender,
+          teachers.mobile,
+          teachers.subject,
+          teachers.date,
+          teachers.experience,
+          teachers.salary
+        FROM teachers
+        JOIN user
+        ON teachers.userId = user.id
+        WHERE teachers.userId = ?
+      `;
+
+      values = [userId];
     }
 
-    const [teachers] = await pool.query(
-      query,
-      values
-    );
+    const [data] = await pool.query(query, values);
 
     res.status(200).json({
-      status: "success",
-      message: "Get Teachers",
-      data: teachers,
+      status: "Success",
+      data,
     });
 
   } catch (error) {
@@ -39,10 +71,19 @@ const getTeachers = async (req, res) => {
     console.log(error);
 
     res.status(500).json({
-      status: "failed",
-      message: "Server Error",
+      status: "Failed",
+      message: error.message,
     });
+
   }
 };
 
 module.exports = getTeachers;
+
+
+
+
+
+
+
+

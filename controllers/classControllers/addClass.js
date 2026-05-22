@@ -10,6 +10,8 @@ const addClass = async (req, res) => {
 
     const [existingClass] = await pool.query(checkQuery, [className]);
 
+    //check email
+
     if (existingClass.length > 0) {
       return res.status(400).json({ status: "Failed", message: "Existing classes already" });
     }

@@ -18,7 +18,7 @@ exports.authorization = async (req,res,next) => {
 
 exports.roleAuthorization = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includees(req.user.role)) {
+        if (!roles.includes(req.user.role)) {
             return res.status(403).json({
                 error: "Acces Denied"
             })
