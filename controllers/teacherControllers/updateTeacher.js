@@ -7,9 +7,9 @@ const editTeachers = async (req, res) => {
     const { name, surname, gender, mobile, subject, date, experience, salary } = req.body;
 
     const updateTeachers =
-      "UPDATE teachers SET name=?, surname=?, gender=?, mobile=?, subject=?, date=?, experience=?, salary=? WHERE user_id=?";
+      "UPDATE teachers SET name=?, surname=?, gender=?, mobile=?, subject=?, date=?, experience=?, salary=? WHERE userId=?";
 
-    await pool.query(updateTeachers, [
+    const [result] = await pool.query(updateTeachers, [
       name,
       surname,
       gender,
@@ -20,6 +20,8 @@ const editTeachers = async (req, res) => {
       salary,
       id
     ]);
+
+    console.log("Result", result);
 
     res.status(200).json({
       status: "Success",

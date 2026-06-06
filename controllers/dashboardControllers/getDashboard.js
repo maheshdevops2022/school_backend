@@ -5,8 +5,8 @@ const getDashboard = async (req, res) => {
 
     // TOTAL STUDENTS
     const [students] = await pool.query(`
-      SELECT SUM(total_students) AS totalStudents
-      FROM classes
+      SELECT COUNT(*) AS totalStudents
+      FROM students
     `);
 
     // TOTAL CLASSES

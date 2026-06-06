@@ -13,6 +13,13 @@ const updateClass = require("../controllers/classControllers/updateClass");
 const deleteClasses = require("../controllers/classControllers/deleteClass");
 const getDashboard = require("../controllers/dashboardControllers/getDashboard");
 const { authorization, roleAuthorization } = require("../middleware/auth");
+const upload = require("../middleware/multer");
+const { uploadStudents } = require("../uploads/uploadStudents");
+const { uploadTeachers } = require("../uploads/uploadTeachers");
+const addHod = require("../controllers/hodControllers/addHod");
+const getHod = require("../controllers/hodControllers/getHod");
+const editHods = require("../controllers/hodControllers/editHod");
+const deleteHods = require("../controllers/hodControllers/deleteHod");
 
 const router = express.Router();
 
@@ -60,5 +67,17 @@ router.delete("/deleteClasses/:id", deleteClasses);
 //dashboard
 
 router.get("/getDashboard", authorization, roleAuthorization("admin", "teacher"), getDashboard);
+
+//csv upload
+
+router.post("/uploadStudents", upload.single("file"), uploadStudents);
+router.post("/uploadTeachers", upload.single("file"), uploadTeachers);
+
+//hods
+
+router.post("/addHods", authorization, roleAuthorization("admin"), addHod);
+router.get("/getHods", authorization, roleAuthorization("admin", "hod"), getHod);
+router.put("/editHods/:id", authorization, roleAuthorization("admin"), editHods);
+router.delete("/deleteHods/:id", authorization, roleAuthorization("admin"), deleteHods);
 
 module.exports = router;
